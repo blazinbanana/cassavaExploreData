@@ -1,4 +1,4 @@
-# Cassava Disease Classification — Data Exploration & Initial Model Training
+# Cassava Disease Classification — Data Exploration & Model Development
 
 ## Project Goal
 The objective of this project is to build a model capable of analyzing images of cassava crops to:
@@ -72,7 +72,7 @@ Steps performed:
 For classification tasks, an error metric is needed to measure model performance during training.
 
 ### Why Cross Entropy?
-Cross entropy is widely used for classification problems because it measures the difference between:
+Cross entropy measures the difference between:
 
 - Model prediction probabilities
 - True class labels
@@ -90,122 +90,135 @@ Models with minimized cross entropy typically achieve higher accuracy.
 
 ---
 
-## Multiclass Classification Task
-The goal is to classify crop disease images into **five classes** using a Convolutional Neural Network (CNN).
+## Initial Multiclass Classification Model (CNN)
+The initial approach used a Convolutional Neural Network (CNN) to classify crop disease images into **five classes**.
 
-Key objectives implemented:
-
+### Objectives Implemented
 - Convert grayscale images to RGB
 - Resize images
 - Normalize data
 - Create transformation pipelines
-- Build a CNN architecture
-- Train the network for multiclass classification
+- Build CNN architecture
+- Train network for multiclass classification
 - Detect overfitting
 
----
+### CNN Architecture Implemented
+1. Convolution Layer 1
+2. ReLU activation
+3. Max pooling
+4. Convolution Layer 2
+5. Convolution Layer 3
+6. Flatten layer
+7. Dropout layer
+8. Fully connected layer
+9. Output linear layer
 
-## CNN Architecture Implemented
-A Convolutional Neural Network was built with the following structure:
-
-1. **Convolution Layer 1**
-2. **ReLU Activation**
-   - Introduces non-linearity.
-   - Helps remove noise while retaining strong features.
-3. **Max Pooling**
-   - Reduces spatial dimensions.
-   - Decreases computation.
-   - Helps prevent overfitting.
-   - Retains prominent features.
-
-4. **Convolution Layer 2**
-5. **Convolution Layer 3**
-6. **Flatten Layer**
-7. **Dropout Layer**
-8. **Fully Connected (Linear) Layer**
-9. **Output Linear Layer**
-
----
-
-## Model Training
-Training setup:
-
-- Loss function: **Cross Entropy**
-- Optimizer: **Adam**
-- Computation device: **CUDA (GPU)**
+### Model Training Setup
+- Loss function: Cross Entropy
+- Optimizer: Adam
+- Device: CUDA (GPU)
 - Training executed using a training function from `training.py`.
 
-After training:
-- Training and validation loss curves were plotted.
-- Training and validation accuracy were also plotted.
-
-These plots revealed the presence of **overfitting**, where training performance improves while validation performance degrades.
+Training and validation loss and accuracy were plotted, revealing **overfitting**.
 
 ---
 
 ## Overfitting Observed
-The model performed significantly better on training data compared to validation data, indicating that it memorized training samples rather than generalizing to unseen data.
+The model performed significantly better on training data than validation data, indicating poor generalization to unseen data.
+
+Several mitigation techniques were identified but not implemented at this stage, including:
+
+- Data augmentation
+- Dropout tuning
+- Regularization
+- Early stopping
+- Model simplification
+- Batch normalization
+- Cross-validation
+- Increasing dataset size
 
 ---
 
-## Potential Solutions to Overfitting
-Several strategies were identified but **not yet implemented**:
+## Transfer Learning Implementation
+To improve performance and reduce training time, the project moved to **Transfer Learning**.
 
-- **Data Augmentation**  
-  Generate new training samples via rotations, flips, and scaling.
+### What is Transfer Learning?
+Transfer learning uses networks that have already been trained on large image datasets and adapts them to new tasks.
 
-- **Dropout Layers**  
-  Randomly deactivate neurons during training to reduce reliance on specific features.
+Instead of training an entire model from scratch, only the task-specific layers are trained while the rest of the network acts as a feature extractor.
 
-- **Regularization (L1/L2)**  
-  Penalize overly complex models.
+### Steps Implemented
+1. Loaded competition dataset.
+2. Downloaded a publicly available pre-trained image classification model.
+3. Froze existing network parameters:
+   ```python
+   params.requires_grad = False
+   ```
+This prevents pretrained weights from being updated during backpropagation.
 
-- **Early Stopping**  
-  Stop training once validation loss begins to increase.
+4. Replaced the final classification layer
 
-- **Reduce Model Complexity**  
-  Use fewer layers or smaller layers.
+The pretrained model originally classified **1000 classes**, while this task requires only **5 classes**. Therefore:
 
-- **Use More Data**  
-  Increase dataset size if possible.
+- The final classification layer was replaced.
+- A custom classification head was added.
+- Only this new layer is trained.
+- The rest of the network performs feature extraction.
 
-- **Batch Normalization**  
-  Improve training stability and sometimes reduce overfitting.
+This greatly improves training speed and performance.
 
-- **Cross-validation**  
-  Validate performance across different data splits.
+---
 
-None of these mitigation strategies have yet been applied.
+## K-Fold Cross Validation
+
+To further combat overfitting and obtain robust evaluation results, **k-fold cross-validation** was introduced.
+
+### Why K-Fold Cross Validation?
+
+Instead of training and validating on a single split:
+
+- Data is divided into **k subsets**.
+- The model is trained multiple times.
+- Each subset acts as validation once while others act as training data.
+
+This provides more reliable performance estimates and reduces overfitting risk.
+
+### Implementation Step
+
+A function was built to **reset the custom classification layers** after each fold so every fold begins training from the same starting point.
 
 ---
 
 ## Current Status
-The project has progressed from data exploration to initial CNN training.
 
-Completed work includes:
+The project has progressed through:
 
-- Dataset inspection and balancing
+- Dataset exploration and balancing
 - Image preprocessing and normalization
-- Data transformation pipelines
-- Dataloader creation
-- CNN architecture implementation
-- Model training using cross entropy loss
-- Detection of overfitting
+- CNN training and overfitting detection
+- Transfer learning implementation
+- Replacement of final classification layer
+- Freezing pretrained model parameters
+- K-fold cross-validation setup
+- Model reset function for cross-validation cycles
 
-No overfitting mitigation strategies have been applied yet.
+Training now focuses on fine-tuning the transfer learning setup using cross-validation.
 
 ---
 
 ## Next Steps
-Planned next steps include:
 
-- Apply overfitting mitigation techniques
-- Improve model generalization
-- Tune model architecture and training parameters
-- Re-train and evaluate performance
-- Prepare the model for deployment
+Planned improvements include:
+
+- Fine-tuning pretrained layers if necessary
+- Applying augmentation and regularization
+- Further reducing overfitting
+- Hyperparameter tuning
+- Final model evaluation
+- Preparing deployment pipeline
 
 ---
 
 ## Summary
-The project has successfully moved beyond dataset preparation into initial CNN training. However, the current model suffers from overfitting, and the next development phase will focus on improving generalization before deployment.
+
+The project has evolved from raw dataset exploration to advanced training using transfer learning and cross-validation. The system now leverages pretrained networks for faster training and improved performance, while cross-validation provides more robust evaluation. Further refinement will focus on improving generalization and preparing the model for deployment.
