@@ -1,5 +1,7 @@
-# Cassava Disease Classification
+# 🌿 Cassava Disease Classification
 > A deep learning pipeline for multi-class plant disease detection using transfer learning, k-fold cross-validation, and callback-enhanced training.
+
+![Sample Images=['cassava healthy']](cassava.png)
 
 ---
 
@@ -37,7 +39,7 @@ Class Imbalance Handling (Under-sampling)
 Baseline CNN → Overfitting Analysis
     │
     ▼
-Transfer Learning (Pretrained Backbone) -> I'm using ResNet50
+Transfer Learning (Pretrained Backbone)
     │
     ▼
 K-Fold Cross Validation
@@ -240,10 +242,44 @@ def predict(model, data_loader, device="cpu"):
 
     return all_probs
 
-
 ```
 
 ---
+
+## 📊 Training Results
+
+### Loss Curves
+
+![Loss over Epochs](loss_curves.png)
+
+> Training loss continues to decrease while validation loss plateaus around **~0.95**, indicating mild overfitting that is controlled by early stopping and regularization.
+
+---
+
+### Learning Rate Schedule
+
+![Learning Rate Schedule](lr_schedule.png)
+
+> LR starts at `1e-3`, steps down to `2e-4` at epoch 5, then to `~4e-5` at epoch 9, and finally decays to `~1e-4` by epoch 15 — enabling coarse-to-fine convergence.
+
+---
+
+### Confusion Matrix
+
+![Confusion Matrix](confusion_matrix.png)
+
+| Class | Correct | Total | Accuracy |
+|-------|---------|-------|----------|
+| cassava-healthy | 200 | 284 | 70.4% |
+| cassava-mosaic-disease-cmd | 179 | 301 | 59.5% |
+| cassava-brown-streak-disease-cbsd | 174 | 291 | 59.8% |
+| cassava-green-mottle-cgm | 183 | 323 | 56.7% |
+| cassava-bacterial-blight-cbb | 244 | 324 | 75.3% |
+
+> **Strongest performance** on `cassava-bacterial-blight-cbb` (75.3%) and `cassava-healthy` (70.4%). Primary confusion exists between `cbsd` ↔ `cgm` classes.
+
+---
+
 
 
 ---
