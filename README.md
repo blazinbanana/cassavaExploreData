@@ -37,7 +37,7 @@ Class Imbalance Handling (Under-sampling)
 Baseline CNN → Overfitting Analysis
     │
     ▼
-Transfer Learning (Pretrained Backbone)
+Transfer Learning (Pretrained Backbone) -> I'm using ResNet50
     │
     ▼
 K-Fold Cross Validation
@@ -66,7 +66,7 @@ Inference → Submission CSV
 
 ```python
 transforms.Compose([
-    transforms.Grayscale(num_output_channels=3),   # Grayscale → RGB
+    ConvertToRGB(),   # Grayscale → RGB
     transforms.Resize((224, 224)),                  # Standardize dimensions
     transforms.ToTensor(),                          # Convert to PyTorch tensor
     transforms.Normalize(mean=[...], std=[...])     # Mean ≈ 0, Std ≈ 1
