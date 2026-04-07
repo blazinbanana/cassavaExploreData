@@ -279,8 +279,19 @@ def predict(model, data_loader, device="cpu"):
 > **Strongest performance** on `cassava-bacterial-blight-cbb` (75.3%) and `cassava-healthy` (70.4%). Primary confusion exists between `cbsd` ↔ `cgm` classes.
 
 ---
+## 🥔 Extension: Potato Disease Classification
 
+> Building on the success of the Cassava classification pipeline, I have used this exact same deep learning workflow and successfully adapted and implemented it for **Potato Plant Disease Detection**.
 
+By pointing the data loaders to a new dataset and updating the classification head, the pipeline efficiently generalizes to new agricultural domains with minimal structural changes.
+
+### Potato Classes Handled
+
+| Label | Description |
+|-------|-------------|
+| `0` | Potato Early Blight |
+| `1` | Potato Late Blight |
+| `2` | Potato Healthy |
 
 ---
 
