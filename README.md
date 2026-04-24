@@ -1,4 +1,4 @@
-# 🌿 Cassava Disease Classification
+# Cassava Disease Classification
 > A deep learning pipeline for multi-class plant disease detection using transfer learning, k-fold cross-validation, and callback-enhanced training.
 
 ![Sample Images=['cassava healthy']](cassava.png)
